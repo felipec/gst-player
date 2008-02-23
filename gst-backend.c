@@ -113,6 +113,28 @@ backend_stop (void)
 }
 
 void
+backend_pause (void)
+{
+    gst_element_set_state (pipeline, GST_STATE_PAUSED);
+}
+
+void
+backend_resume (void)
+{
+    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+}
+
+void
+backend_reset (void)
+{
+    gst_element_seek (pipeline, 1.0,
+                      GST_FORMAT_TIME,
+                      GST_SEEK_FLAG_FLUSH,
+                      GST_SEEK_TYPE_SET, 0,
+                      GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+}
+
+void
 backend_deinit (void)
 {
 }

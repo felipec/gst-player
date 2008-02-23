@@ -23,19 +23,32 @@
 
 static char *uri_to_play;
 static GtkWidget *video_output;
+static GtkWidget *pause_button;
 
 static void
-play_cb (GtkWidget *widget,
-         gpointer data)
+pause_cb (GtkWidget *widget,
+          gpointer data)
 {
-    /* backend_play (); */
+    static gboolean paused;
+    if (paused)
+    {
+        backend_resume ();
+        gtk_button_set_label (pause_button, "Pause");
+        paused = FALSE;
+    }
+    else
+    {
+        backend_pause ();
+        gtk_button_set_label (pause_button, "Resume");
+        paused = TRUE;
+    }
 }
 
 static void
-stop_cb (GtkWidget *widget,
-         gpointer data)
+reset_cb (GtkWidget *widget,
+          gpointer data)
 {
-    backend_stop ();
+    backend_reset ();
 }
 
 static gboolean
@@ -94,21 +107,23 @@ start (void)
     }
 
     {
-        button = gtk_button_new_with_label ("Play");
+        button = gtk_button_new_with_label ("Pause");
 
         g_signal_connect (G_OBJECT (button), "clicked",
-                          G_CALLBACK (play_cb), NULL);
+                          G_CALLBACK (pause_cb), NULL);
 
         gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 2);
 
         gtk_widget_show (button);
+
+        pause_button = button;
     }
 
     {
-        button = gtk_button_new_with_label ("Stop");
+        button = gtk_button_new_with_label ("Reset");
 
         g_signal_connect (G_OBJECT (button), "clicked",
-                          G_CALLBACK (stop_cb), NULL);
+                          G_CALLBACK (reset_cb), NULL);
 
         gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 2);
 
