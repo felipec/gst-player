@@ -29,6 +29,7 @@ static GtkWidget *video_output;
 static GtkWidget *pause_button;
 static GtkWidget *scale;
 static gint64 duration;
+static GtkWidget *window;
 
 static void
 toggle_paused (void)
@@ -45,6 +46,22 @@ toggle_paused (void)
         backend_pause ();
         gtk_button_set_label (GTK_BUTTON (pause_button), "Resume");
         paused = TRUE;
+    }
+}
+
+static void
+toggle_fullscreen (void)
+{
+    static gboolean fullscreen = FALSE;
+    if (fullscreen)
+    {
+        gtk_window_unfullscreen (window);
+        fullscreen = FALSE;
+    }
+    else
+    {
+        gtk_window_fullscreen (window);
+        fullscreen = TRUE;
     }
 }
 
@@ -89,6 +106,10 @@ key_press (GtkWidget *widget,
         case GDK_space:
             toggle_paused ();
             break;
+        case GDK_F:
+        case GDK_f:
+            toggle_fullscreen ();
+            break;
         case GDK_R:
         case GDK_r:
             backend_reset ();
@@ -98,6 +119,10 @@ key_press (GtkWidget *widget,
             break;
         case GDK_Left:
             backend_seek (-10);
+            break;
+        case GDK_Q:
+        case GDK_q:
+            gtk_main_quit ();
             break;
         default:
             break;
@@ -121,7 +146,6 @@ seek_cb (GtkRange *range,
 static void
 start (void)
 {
-    GtkWidget *window;
     GtkWidget *button;
     GtkWidget *hbox;
     GtkWidget *vbox;
@@ -137,7 +161,7 @@ start (void)
     g_signal_connect (G_OBJECT (window), "key-press-event",
                       G_CALLBACK (key_press), NULL);
 
-    gtk_container_set_border_width (GTK_CONTAINER (window), 2);
+    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
     vbox = gtk_vbox_new (FALSE, 0);
 
@@ -154,7 +178,7 @@ start (void)
     {
         video_output = gtk_drawing_area_new ();
 
-        gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 2);
+        gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 0);
 
         gtk_widget_set_size_request (video_output, 128, 128);
 
@@ -253,6 +277,7 @@ main (int argc,
             uri_to_play = g_strdup_printf ("file://%s", argv[1]);
     }
 
+    toggle_fullscreen ();
     g_idle_add (init, NULL);
     g_timeout_add (1000, timeout, NULL);
 
