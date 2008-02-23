@@ -163,7 +163,7 @@ backend_query_position (void)
 
     gst_element_query_position (pipeline, &format, &cur);
     if (format != GST_FORMAT_TIME)
-        return 0;
+        return GST_CLOCK_TIME_NONE;
 
     return cur;
 }
@@ -176,7 +176,7 @@ backend_query_duration (void)
 
     gst_element_query_duration (pipeline, &format, &cur);
     if (format != GST_FORMAT_TIME)
-        return 0;
+        return GST_CLOCK_TIME_NONE;
 
     return cur;
 }

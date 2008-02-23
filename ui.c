@@ -29,7 +29,6 @@ static GtkWidget *video_output;
 static GtkWidget *pause_button;
 static GtkWidget *scale;
 static gint64 duration;
-static gboolean seeking;
 
 static void
 toggle_paused (void)
@@ -38,13 +37,13 @@ toggle_paused (void)
     if (paused)
     {
         backend_resume ();
-        gtk_button_set_label (pause_button, "Pause");
+        gtk_button_set_label (GTK_BUTTON (pause_button), "Pause");
         paused = FALSE;
     }
     else
     {
         backend_pause ();
-        gtk_button_set_label (pause_button, "Resume");
+        gtk_button_set_label (GTK_BUTTON (pause_button), "Resume");
         paused = TRUE;
     }
 }
@@ -231,7 +230,7 @@ timeout (gpointer data)
     {
         double value;
         value = (pos * (((double) 100) / duration));
-        gtk_range_set_value (scale, value);
+        gtk_range_set_value (GTK_RANGE (scale), value);
     }
 
     return TRUE;
