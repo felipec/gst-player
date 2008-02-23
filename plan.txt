@@ -7,9 +7,10 @@
  * full-screen
 
 0.1.0:
+ * time display
  * button images
  * proper seeking backend
- * time display
+ * better fullscreen support
 
 0.2.0:
  * media player widget
