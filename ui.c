@@ -28,8 +28,10 @@ static char *uri_to_play;
 static GtkWidget *video_output;
 static GtkWidget *pause_button;
 static GtkWidget *scale;
-static gint64 duration;
+static guint64 duration;
 static GtkWidget *window;
+
+#define DURATION_IS_VALID(x) (x != 0 && x != (guint64) -1)
 
 static void
 toggle_paused (void)
@@ -139,8 +141,11 @@ seek_cb (GtkRange *range,
 {
     guint64 to_seek;
 
-    if (!duration)
+    if (!DURATION_IS_VALID (duration))
         duration = backend_query_duration ();
+
+    if (!DURATION_IS_VALID (duration))
+        return;
 
     to_seek = (value / 100) * duration;
 
@@ -251,8 +256,11 @@ timeout (gpointer data)
     guint64 pos;
 
     pos = backend_query_position ();
-    if (!duration)
+    if (!DURATION_IS_VALID (duration))
         duration = backend_query_duration ();
+
+    if (!DURATION_IS_VALID (duration))
+        return TRUE;
 
 #if 0
     g_print ("duration=%f\n", duration / ((double) 60 * 1000 * 1000 * 1000));
