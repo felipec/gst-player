@@ -1,0 +1,11 @@
+0.0.1:
+ * play
+ * pause
+ * stop
+ * seek
+ * keyboard bindings
+ * full-screen
+
+0.0.2:
+ * button images
+ * media player widget
