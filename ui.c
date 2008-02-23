@@ -137,10 +137,19 @@ seek_cb (GtkRange *range,
          gdouble value,
          gpointer data)
 {
+    guint64 to_seek;
+
+    if (!duration)
+        duration = backend_query_duration ();
+
+    to_seek = (value / 100) * duration;
+
 #if 0
-    g_print ("seek: %f\n", (value / 100) * duration);
+    g_print ("value: %f\n", value);
+    g_print ("duration: %llu\n", duration);
+    g_print ("seek: %llu\n", to_seek);
 #endif
-    backend_seek_absolute ((value / 100) * duration);
+    backend_seek_absolute (to_seek);
 }
 
 static void
@@ -242,7 +251,8 @@ timeout (gpointer data)
     guint64 pos;
 
     pos = backend_query_position ();
-    duration = backend_query_duration ();
+    if (!duration)
+        duration = backend_query_duration ();
 
 #if 0
     g_print ("duration=%f\n", duration / ((double) 60 * 1000 * 1000 * 1000));
