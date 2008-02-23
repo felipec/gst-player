@@ -1,4 +1,4 @@
-0.0.1:
+0.0.0:
  * play
  * pause
  * stop
@@ -6,6 +6,10 @@
  * keyboard bindings
  * full-screen
 
-0.0.2:
+0.1.0:
  * button images
+ * proper seeking backend
+ * time display
+
+0.2.0:
  * media player widget
