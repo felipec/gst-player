@@ -180,7 +180,7 @@ start (void)
 
         gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 0);
 
-        gtk_widget_set_size_request (video_output, 128, 128);
+        gtk_widget_set_size_request (video_output, 0x200, 0x100);
 
         gtk_widget_show (video_output);
     }
