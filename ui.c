@@ -18,6 +18,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <string.h>
 
@@ -26,10 +27,9 @@ static GtkWidget *video_output;
 static GtkWidget *pause_button;
 
 static void
-pause_cb (GtkWidget *widget,
-          gpointer data)
+toggle_paused (void)
 {
-    static gboolean paused;
+    static gboolean paused = FALSE;
     if (paused)
     {
         backend_resume ();
@@ -42,6 +42,13 @@ pause_cb (GtkWidget *widget,
         gtk_button_set_label (pause_button, "Resume");
         paused = TRUE;
     }
+}
+
+static void
+pause_cb (GtkWidget *widget,
+          gpointer data)
+{
+    toggle_paused ();
 }
 
 static void
@@ -66,6 +73,27 @@ destroy (GtkWidget *widget,
     gtk_main_quit ();
 }
 
+static gboolean
+key_press (GtkWidget *widget,
+           GdkEventKey *event,
+           gpointer data)
+{
+    switch (event->keyval)
+    {
+        case GDK_P:
+        case GDK_p:
+        case GDK_space:
+            toggle_paused ();
+            break;
+        case GDK_R:
+        case GDK_r:
+            backend_reset ();
+            break;
+        default:
+            break;
+    }
+}
+
 static void
 start (void)
 {
@@ -81,6 +109,9 @@ start (void)
 
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (destroy), NULL);
+
+    g_signal_connect (G_OBJECT (window), "key-press-event",
+                      G_CALLBACK (key_press), NULL);
 
     gtk_container_set_border_width (GTK_CONTAINER (window), 2);
 
