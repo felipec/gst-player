@@ -22,9 +22,14 @@
 
 #include <string.h>
 
+#include "gst-backend.h"
+
 static char *uri_to_play;
 static GtkWidget *video_output;
 static GtkWidget *pause_button;
+static GtkWidget *scale;
+static gint64 duration;
+static gboolean seeking;
 
 static void
 toggle_paused (void)
@@ -89,9 +94,29 @@ key_press (GtkWidget *widget,
         case GDK_r:
             backend_reset ();
             break;
+        case GDK_Right:
+            backend_seek (10);
+            break;
+        case GDK_Left:
+            backend_seek (-10);
+            break;
         default:
             break;
     }
+
+    return TRUE;
+}
+
+static void
+seek_cb (GtkRange *range,
+         GtkScrollType scroll,
+         gdouble value,
+         gpointer data)
+{
+#if 0
+    g_print ("seek: %f\n", (value / 100) * duration);
+#endif
+    backend_seek_absolute ((value / 100) * duration);
 }
 
 static void
@@ -161,18 +186,55 @@ start (void)
         gtk_widget_show (button);
     }
 
+    {
+        GtkObject *adjustment;
+        adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
+        scale = gtk_hscale_new (GTK_ADJUSTMENT (adjustment));
+
+        gtk_box_pack_end (GTK_BOX (hbox), scale, TRUE, TRUE, 2);
+
+        g_signal_connect (G_OBJECT (scale), "change-value",
+                          G_CALLBACK (seek_cb), NULL);
+
+        gtk_widget_show (scale);
+    }
+
     gtk_widget_show (window);
 }
 
 static gboolean
 init (gpointer data)
 {
-    backend_set_window (GDK_WINDOW_XWINDOW (video_output->window));
+    backend_set_window (GINT_TO_POINTER (GDK_WINDOW_XWINDOW (video_output->window)));
 
     if (uri_to_play)
         backend_play (uri_to_play);
 
     return FALSE;
+}
+
+static gboolean
+timeout (gpointer data)
+{
+    guint64 pos;
+
+    pos = backend_query_position ();
+    duration = backend_query_duration ();
+
+#if 0
+    g_print ("duration=%f\n", duration / ((double) 60 * 1000 * 1000 * 1000));
+    g_print ("position=%llu\n", pos);
+#endif
+
+    /** @todo use events for seeking instead of checking for bad positions. */
+    if (pos != 0)
+    {
+        double value;
+        value = (pos * (((double) 100) / duration));
+        gtk_range_set_value (scale, value);
+    }
+
+    return TRUE;
 }
 
 int
@@ -193,6 +255,7 @@ main (int argc,
     }
 
     g_idle_add (init, NULL);
+    g_timeout_add (1000, timeout, NULL);
 
     gtk_main ();
 

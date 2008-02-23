@@ -25,6 +25,7 @@ static GstElement *pipeline;
 static GstElement *bin;
 static GstElement *videosink;
 static gpointer window;
+static GstSeekFlags seek_flags = GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT;
 
 static gboolean
 bus_cb (GstBus *bus,
@@ -129,9 +130,55 @@ backend_reset (void)
 {
     gst_element_seek (pipeline, 1.0,
                       GST_FORMAT_TIME,
-                      GST_SEEK_FLAG_FLUSH,
+                      seek_flags,
                       GST_SEEK_TYPE_SET, 0,
                       GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+}
+
+void
+backend_seek (gint value)
+{
+    gst_element_seek (pipeline, 1.0,
+                      GST_FORMAT_TIME,
+                      seek_flags,
+                      GST_SEEK_TYPE_CUR, value * GST_SECOND,
+                      GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+}
+
+void
+backend_seek_absolute (guint64 value)
+{
+    gst_element_seek (pipeline, 1.0,
+                      GST_FORMAT_TIME,
+                      seek_flags,
+                      GST_SEEK_TYPE_SET, value,
+                      GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+}
+
+guint64
+backend_query_position (void)
+{
+    GstFormat format = GST_FORMAT_TIME;
+    guint64 cur;
+
+    gst_element_query_position (pipeline, &format, &cur);
+    if (format != GST_FORMAT_TIME)
+        return 0;
+
+    return cur;
+}
+
+guint64
+backend_query_duration (void)
+{
+    GstFormat format = GST_FORMAT_TIME;
+    guint64 cur;
+
+    gst_element_query_duration (pipeline, &format, &cur);
+    if (format != GST_FORMAT_TIME)
+        return 0;
+
+    return cur;
 }
 
 void
