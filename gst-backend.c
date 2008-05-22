@@ -72,7 +72,7 @@ backend_set_window (gpointer window_)
 }
 
 void
-backend_play (const char *uri)
+backend_play (const gchar *filename)
 {
     backend_stop ();
 
@@ -92,7 +92,29 @@ backend_play (const char *uri)
         gst_object_unref (bus);
     }
 
-    g_object_set (G_OBJECT (bin), "uri", uri, NULL);
+    {
+        gchar *uri;
+
+        if (gst_uri_is_valid (filename))
+        {
+            uri = g_strdup (filename);
+        }
+        else if (g_path_is_absolute (filename))
+        {
+            uri = g_filename_to_uri (filename, NULL, NULL);
+        }
+        else
+        {
+            gchar *tmp;
+            tmp = g_build_filename (g_get_current_dir (), filename, NULL);
+            uri = g_filename_to_uri (tmp, NULL, NULL);
+            g_free (tmp);
+        }
+
+        g_debug ("%s", uri);
+        g_object_set (G_OBJECT (bin), "uri", uri, NULL);
+        g_free (uri);
+    }
 
     g_object_set (G_OBJECT (videosink), "force-aspect-ratio", TRUE, NULL);
 

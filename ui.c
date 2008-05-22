@@ -24,7 +24,7 @@
 
 #include "gst-backend.h"
 
-static char *uri_to_play;
+static gchar *filename;
 static GtkWidget *video_output;
 static GtkWidget *pause_button;
 static GtkWidget *scale;
@@ -244,8 +244,8 @@ init (gpointer data)
 {
     backend_set_window (GINT_TO_POINTER (GDK_WINDOW_XWINDOW (video_output->window)));
 
-    if (uri_to_play)
-        backend_play (uri_to_play);
+    if (filename)
+        backend_play (filename);
 
     return FALSE;
 }
@@ -289,10 +289,7 @@ main (int argc,
 
     if (argc > 1)
     {
-        if (strchr (argv[1], ':'))
-            uri_to_play = g_strdup (argv[1]);
-        else
-            uri_to_play = g_strdup_printf ("file://%s", argv[1]);
+        filename = g_strdup (argv[1]);
     }
 
     toggle_fullscreen ();
@@ -301,7 +298,7 @@ main (int argc,
 
     gtk_main ();
 
-    g_free (uri_to_play);
+    g_free (filename);
 
     backend_deinit ();
 

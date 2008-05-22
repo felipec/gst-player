@@ -22,7 +22,7 @@
 void backend_init (int *argc, char **argv[]);
 void backend_deinit (void);
 void backend_set_window (gpointer window);
-void backend_play (const char *uri);
+void backend_play (const gchar *filename);
 void backend_stop (void);
 void backend_seek (gint value);
 void backend_seek_absolute (guint64 value);
