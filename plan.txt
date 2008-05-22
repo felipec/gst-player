@@ -11,6 +11,7 @@
  * button images
  * proper seeking backend
  * better fullscreen support
+ * handle aspect-ratio
 
 0.2.0:
  * media player widget

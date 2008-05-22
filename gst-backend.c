@@ -94,6 +94,8 @@ backend_play (const char *uri)
 
     g_object_set (G_OBJECT (bin), "uri", uri, NULL);
 
+    g_object_set (G_OBJECT (videosink), "force-aspect-ratio", TRUE, NULL);
+
     if (GST_IS_X_OVERLAY (videosink))
     {
         gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (videosink), GPOINTER_TO_INT (window));
