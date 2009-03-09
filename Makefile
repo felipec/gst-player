@@ -1,23 +1,27 @@
-CC=gcc
+CC := gcc
 
-EXTRA_WARNINGS=-Wall -W -Wformat-nonliteral -Wcast-align -Wpointer-arith \
-	       -Wbad-function-cast -Wmissing-prototypes -Wstrict-prototypes \
-	       -Wmissing-declarations -Winline -Wundef -Wnested-externs -Wcast-qual \
-	       -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -ansi -std=c99
+EXTRA_WARNINGS := -Wextra -ansi -std=c99 -Wno-unused-parameter
 
-GST_LIBS=`pkg-config --libs gstreamer-0.10` -lgstinterfaces-0.10
-GST_CFLAGS=`pkg-config --cflags gstreamer-0.10`
-GTK_LIBS=`pkg-config --libs gtk+-2.0`
-GTK_CFLAGS=`pkg-config --cflags gtk+-2.0`
+GST_LIBS := $(shell pkg-config --libs gstreamer-0.10 gstreamer-interfaces-0.10)
+GST_CFLAGS := $(shell pkg-config --cflags gstreamer-0.10 gstreamer-interfaces-0.10)
+GTK_LIBS := $(shell pkg-config --libs gtk+-2.0)
+GTK_CFLAGS := $(shell pkg-config --cflags gtk+-2.0)
 
-CFLAGS=-ggdb $(EXTRA_WARNINGS)
+CFLAGS := -ggdb -Wall $(EXTRA_WARNINGS)
 
-BINS=gst-player
+gst-player: ui.o gst-backend.o
+gst-player: CFLAGS := $(GTK_CFLAGS) $(GST_CFLAGS)
+gst-player: LIBS := $(GTK_LIBS) $(GST_LIBS)
+binaries += gst-player
 
-all: $(BINS)
+all: $(binaries)
 
-gst-player: ui.c gst-backend.c
-	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(GTK_LIBS) $(GST_CFLAGS) $(GST_LIBS) $+ -o $@
+$(binaries):
+	$(CC) $(LDFLAGS) $(LIBS) -o $@ $^
+
+%.o:: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	rm -rf $(BINS)
+	rm -rf $(binaries)
+	find . -name "*.o" | xargs rm -rf
