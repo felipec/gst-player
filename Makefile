@@ -10,8 +10,8 @@ GTK_CFLAGS := $(shell pkg-config --cflags gtk+-2.0)
 CFLAGS := -ggdb -Wall $(EXTRA_WARNINGS)
 
 gst-player: ui.o gst-backend.o
-gst-player: CFLAGS := $(GTK_CFLAGS) $(GST_CFLAGS)
-gst-player: LIBS := $(GTK_LIBS) $(GST_LIBS)
+gst-player: CFLAGS := $(CFLAGS) $(GTK_CFLAGS) $(GST_CFLAGS)
+gst-player: LIBS := $(LIBS) $(GTK_LIBS) $(GST_LIBS)
 binaries += gst-player
 
 all: $(binaries)
