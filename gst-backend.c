@@ -183,7 +183,7 @@ guint64
 backend_query_position (void)
 {
     GstFormat format = GST_FORMAT_TIME;
-    guint64 cur;
+    gint64 cur;
 
     gst_element_query_position (pipeline, &format, &cur);
     if (format != GST_FORMAT_TIME)
@@ -196,7 +196,7 @@ guint64
 backend_query_duration (void)
 {
     GstFormat format = GST_FORMAT_TIME;
-    guint64 cur;
+    gint64 cur;
 
     gst_element_query_duration (pipeline, &format, &cur);
     if (format != GST_FORMAT_TIME)
