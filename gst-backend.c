@@ -184,9 +184,10 @@ backend_query_position (void)
 {
     GstFormat format = GST_FORMAT_TIME;
     gint64 cur;
+    gboolean result;
 
-    gst_element_query_position (pipeline, &format, &cur);
-    if (format != GST_FORMAT_TIME)
+    result = gst_element_query_position (pipeline, &format, &cur);
+    if (!result || format != GST_FORMAT_TIME)
         return GST_CLOCK_TIME_NONE;
 
     return cur;
@@ -197,9 +198,10 @@ backend_query_duration (void)
 {
     GstFormat format = GST_FORMAT_TIME;
     gint64 cur;
+    gboolean result;
 
-    gst_element_query_duration (pipeline, &format, &cur);
-    if (format != GST_FORMAT_TIME)
+    result = gst_element_query_duration (pipeline, &format, &cur);
+    if (!result || format != GST_FORMAT_TIME)
         return GST_CLOCK_TIME_NONE;
 
     return cur;
