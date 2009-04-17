@@ -79,7 +79,7 @@ backend_play (const gchar *filename)
     pipeline = gst_pipeline_new ("gst-player");
 
     bin = gst_element_factory_make ("playbin", "bin");
-    videosink = gst_element_factory_make ("ximagesink", "videosink");
+    videosink = gst_element_factory_make ("xvimagesink", "videosink");
 
     g_object_set (G_OBJECT (bin), "video-sink", videosink, NULL);
 
