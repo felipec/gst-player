@@ -154,6 +154,7 @@ seek_cb (GtkRange *range,
     g_print ("duration: %llu\n", duration);
     g_print ("seek: %llu\n", to_seek);
 #endif
+
     backend_seek_absolute (to_seek);
 }
 
@@ -263,8 +264,8 @@ timeout (gpointer data)
         return TRUE;
 
 #if 0
-    g_print ("duration=%f\n", duration / ((double) 60 * 1000 * 1000 * 1000));
-    g_print ("position=%llu\n", pos);
+    g_debug ("duration=%f", duration / ((double) 60 * 1000 * 1000 * 1000));
+    g_debug ("position=%llu", pos);
 #endif
 
     /** @todo use events for seeking instead of checking for bad positions. */
