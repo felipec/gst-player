@@ -30,6 +30,7 @@ static GtkWidget *pause_button;
 static GtkWidget *scale;
 static guint64 duration;
 static GtkWindow *window;
+static GtkWidget *controls;
 
 #define DURATION_IS_VALID(x) (x != 0 && x != (guint64) -1)
 
@@ -58,11 +59,13 @@ toggle_fullscreen (void)
     if (fullscreen)
     {
         gtk_window_unfullscreen (window);
+        gtk_widget_show (controls);
         fullscreen = FALSE;
     }
     else
     {
         gtk_window_fullscreen (window);
+        gtk_widget_hide (controls);
         fullscreen = TRUE;
     }
 }
@@ -162,7 +165,6 @@ static void
 start (void)
 {
     GtkWidget *button;
-    GtkWidget *hbox;
     GtkWidget *vbox;
 
     window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
@@ -184,11 +186,11 @@ start (void)
 
     gtk_widget_show (vbox);
 
-    hbox = gtk_hbox_new (FALSE, 0);
+    controls = gtk_hbox_new (FALSE, 0);
 
-    gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
+    gtk_box_pack_end (GTK_BOX (vbox), controls, FALSE, FALSE, 2);
 
-    gtk_widget_show (hbox);
+    gtk_widget_show (controls);
 
     {
         video_output = gtk_drawing_area_new ();
@@ -206,7 +208,7 @@ start (void)
         g_signal_connect (G_OBJECT (button), "clicked",
                           G_CALLBACK (pause_cb), NULL);
 
-        gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 2);
+        gtk_box_pack_start (GTK_BOX (controls), button, FALSE, FALSE, 2);
 
         gtk_widget_show (button);
 
@@ -219,7 +221,7 @@ start (void)
         g_signal_connect (G_OBJECT (button), "clicked",
                           G_CALLBACK (reset_cb), NULL);
 
-        gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 2);
+        gtk_box_pack_start (GTK_BOX (controls), button, FALSE, FALSE, 2);
 
         gtk_widget_show (button);
     }
@@ -229,7 +231,7 @@ start (void)
         adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
         scale = gtk_hscale_new (GTK_ADJUSTMENT (adjustment));
 
-        gtk_box_pack_end (GTK_BOX (hbox), scale, TRUE, TRUE, 2);
+        gtk_box_pack_end (GTK_BOX (controls), scale, TRUE, TRUE, 2);
 
         g_signal_connect (G_OBJECT (scale), "change-value",
                           G_CALLBACK (seek_cb), NULL);
