@@ -29,7 +29,7 @@ static GtkWidget *video_output;
 static GtkWidget *pause_button;
 static GtkWidget *scale;
 static guint64 duration;
-static GtkWidget *window;
+static GtkWindow *window;
 
 #define DURATION_IS_VALID(x) (x != 0 && x != (guint64) -1)
 
@@ -165,7 +165,7 @@ start (void)
     GtkWidget *hbox;
     GtkWidget *vbox;
 
-    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event), NULL);
@@ -237,7 +237,7 @@ start (void)
         gtk_widget_show (scale);
     }
 
-    gtk_widget_show (window);
+    gtk_widget_show (GTK_WIDGET (window));
 }
 
 static gboolean
