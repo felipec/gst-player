@@ -1,17 +1,9 @@
-0.0.0:
- * play
- * pause
- * stop
- * seek
- * keyboard bindings
- * full-screen
-
 0.1.0:
  * time display
  * button images
  * proper seeking backend
  * better fullscreen support
- * handle aspect-ratio
+ * handle aspect-ratio (done)
 
 0.2.0:
  * media player widget
