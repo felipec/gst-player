@@ -55,18 +55,15 @@ toggle_paused (void)
 static void
 toggle_fullscreen (void)
 {
-    static gboolean fullscreen = FALSE;
-    if (fullscreen)
+    if (gdk_window_get_state (GTK_WIDGET (window)->window) == GDK_WINDOW_STATE_FULLSCREEN)
     {
         gtk_window_unfullscreen (window);
         gtk_widget_show (controls);
-        fullscreen = FALSE;
     }
     else
     {
         gtk_window_fullscreen (window);
         gtk_widget_hide (controls);
-        fullscreen = TRUE;
     }
 }
 
