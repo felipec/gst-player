@@ -190,7 +190,11 @@ start (void)
     gtk_widget_show (controls);
 
     {
+        GdkColor color;
+
+        gdk_color_parse ("black", &color);
         video_output = gtk_drawing_area_new ();
+        gtk_widget_modify_bg (GTK_WIDGET (video_output), GTK_STATE_NORMAL, &color);
 
         gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 0);
 
