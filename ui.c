@@ -108,6 +108,7 @@ key_press (GtkWidget *widget,
         case GDK_space:
             toggle_paused ();
             break;
+        case GDK_F11:
         case GDK_F:
         case GDK_f:
             toggle_fullscreen ();
@@ -122,6 +123,7 @@ key_press (GtkWidget *widget,
         case GDK_Left:
             backend_seek (-10);
             break;
+        case GDK_Escape:
         case GDK_Q:
         case GDK_q:
             gtk_main_quit ();
