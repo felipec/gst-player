@@ -86,6 +86,7 @@ delete_event (GtkWidget *widget,
               GdkEvent *event,
               gpointer data)
 {
+    backend_stop ();
     return FALSE;
 }
 
