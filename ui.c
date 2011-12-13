@@ -183,13 +183,9 @@ start (void)
 
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
-    gtk_widget_show (vbox);
-
     controls = gtk_hbox_new (FALSE, 0);
 
     gtk_box_pack_end (GTK_BOX (vbox), controls, FALSE, FALSE, 2);
-
-    gtk_widget_show (controls);
 
     {
         GdkColor color;
@@ -201,8 +197,6 @@ start (void)
         gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 0);
 
         gtk_widget_set_size_request (video_output, 0x200, 0x100);
-
-        gtk_widget_show (video_output);
     }
 
     {
@@ -212,9 +206,6 @@ start (void)
                           G_CALLBACK (pause_cb), NULL);
 
         gtk_box_pack_start (GTK_BOX (controls), button, FALSE, FALSE, 2);
-
-        gtk_widget_show (button);
-
         pause_button = button;
     }
 
@@ -225,8 +216,6 @@ start (void)
                           G_CALLBACK (reset_cb), NULL);
 
         gtk_box_pack_start (GTK_BOX (controls), button, FALSE, FALSE, 2);
-
-        gtk_widget_show (button);
     }
 
     {
@@ -238,11 +227,9 @@ start (void)
 
         g_signal_connect (G_OBJECT (scale), "change-value",
                           G_CALLBACK (seek_cb), NULL);
-
-        gtk_widget_show (scale);
     }
 
-    gtk_widget_show (GTK_WIDGET (window));
+    gtk_widget_show_all (GTK_WIDGET (window));
 }
 
 static gboolean
