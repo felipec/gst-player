@@ -22,7 +22,6 @@
 #include "gst-backend.h"
 
 static GstElement *pipeline;
-static GstElement *bin;
 static GstElement *videosink;
 static gpointer window;
 static GstSeekFlags seek_flags = GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT;
@@ -76,14 +75,10 @@ backend_play (const gchar *filename)
 {
     backend_stop ();
 
-    pipeline = gst_pipeline_new ("gst-player");
-
-    bin = gst_element_factory_make ("playbin", "bin");
+    pipeline = gst_element_factory_make ("playbin", "gst-player");
     videosink = gst_element_factory_make ("xvimagesink", "videosink");
 
-    g_object_set (G_OBJECT (bin), "video-sink", videosink, NULL);
-
-    gst_bin_add (GST_BIN (pipeline), bin);
+    g_object_set (G_OBJECT (pipeline), "video-sink", videosink, NULL);
 
     {
         GstBus *bus;
@@ -112,7 +107,7 @@ backend_play (const gchar *filename)
         }
 
         g_debug ("%s", uri);
-        g_object_set (G_OBJECT (bin), "uri", uri, NULL);
+        g_object_set (G_OBJECT (pipeline), "uri", uri, NULL);
         g_free (uri);
     }
 
