@@ -2,7 +2,7 @@
  * time display
  * button images
  * proper seeking backend
- * better fullscreen support
+ * better fullscreen support (done)
  * handle aspect-ratio (done)
 
 0.2.0:
