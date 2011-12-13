@@ -116,7 +116,6 @@ backend_play (const gchar *filename)
     if (GST_IS_X_OVERLAY (videosink))
     {
         gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (videosink), GPOINTER_TO_INT (window));
-        gst_x_overlay_handle_events (GST_X_OVERLAY (videosink), FALSE);
     }
 
     gst_element_set_state (pipeline, GST_STATE_PLAYING);

@@ -161,6 +161,17 @@ seek_cb (GtkRange *range,
 }
 
 static void
+realize_cb (GtkWidget * widget, 
+            gpointer data)
+{
+    GdkWindow *window = gtk_widget_get_window (video_output);
+
+    gdk_window_ensure_native (window);
+    backend_set_window (GINT_TO_POINTER (GDK_WINDOW_XID (window)));
+    toggle_fullscreen ();
+}
+
+static void
 start (void)
 {
     GtkWidget *button;
@@ -193,10 +204,13 @@ start (void)
         gdk_color_parse ("black", &color);
         video_output = gtk_drawing_area_new ();
         gtk_widget_modify_bg (GTK_WIDGET (video_output), GTK_STATE_NORMAL, &color);
+        gtk_widget_set_double_buffered (video_output, FALSE);
 
         gtk_box_pack_start (GTK_BOX (vbox), video_output, TRUE, TRUE, 0);
 
         gtk_widget_set_size_request (video_output, 0x200, 0x100);
+        
+        g_signal_connect (video_output, "realize", G_CALLBACK (realize_cb), NULL);
     }
 
     {
@@ -233,17 +247,6 @@ start (void)
 }
 
 static gboolean
-init (gpointer data)
-{
-    backend_set_window (GINT_TO_POINTER (GDK_WINDOW_XWINDOW (video_output->window)));
-
-    if (filename)
-        backend_play (filename);
-
-    return FALSE;
-}
-
-static gboolean
 timeout (gpointer data)
 {
     guint64 pos;
@@ -271,6 +274,17 @@ timeout (gpointer data)
     return TRUE;
 }
 
+static gboolean
+init (gpointer data)
+{
+    if (filename)
+        backend_play (filename);
+
+    g_timeout_add (1000, timeout, NULL);
+
+    return FALSE;
+}
+
 int
 main (int argc,
       char *argv[])
@@ -285,9 +299,7 @@ main (int argc,
         filename = g_strdup (argv[1]);
     }
 
-    toggle_fullscreen ();
     g_idle_add (init, NULL);
-    g_timeout_add (1000, timeout, NULL);
 
     gtk_main ();
 
